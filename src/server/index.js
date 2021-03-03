@@ -60,7 +60,7 @@ app.get('/users/:id', async (req, res) => {
     .catch((e) => res.status(500).send(e));
 });
 
-app.post('/users', (req, res) => {
+app.post('/users', async (req, res) => {
   const {name, email, password} = req.body;
   const user = new User({name, email, password});
   user
