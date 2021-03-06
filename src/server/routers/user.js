@@ -1,14 +1,16 @@
 const express = require('express');
 const router = new express.Router();
-const User = require('../../models/user');
+const User = require('../../db/models/user');
+const auth = require('../middleware/auth');
 
 router.post('/users', async (req, res) => {
-  const {name, email, password, age} = req.body;
-  const user = new User({name, email, password, age});
-
   try {
+    const {name, email, password, age} = req.body;
+    const user = new User({name, email, password, age});
     await user.save();
-    res.status(201).send(user);
+    const token = await user.generateAuthToken();
+    console.log('Post user save');
+    res.status(201).send({user, token});
   } catch (err) {
     res.status(400).send(err);
   }
@@ -18,18 +20,22 @@ router.post('/users/login', async (req, res) => {
   try {
     const {email, password} = req.body;
     const user = await User.findByCredentials(email, password);
-    res.send(user);
+    const token = await user.generateAuthToken();
+
+    res.send({user, token});
   } catch (error) {
     res.status(400).send();
   }
 });
 
-router.get('/users', async (req, res) => {
+router.get('/users/me', auth, async (req, res) => {
   try {
-    const users = await User.find({});
-    res.status(200).send(users);
+    const user = req.user;
+    console.log(req.user);
+    if (!user) throw new Error();
+    res.status(200).send(user);
   } catch (error) {
-    res.status(500).send(error);
+    res.status(500).send('User not found.');
   }
 });
 
