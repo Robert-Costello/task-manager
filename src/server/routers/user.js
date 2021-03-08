@@ -28,10 +28,37 @@ router.post('/users/login', async (req, res) => {
   }
 });
 
+router.post('/users/logout', auth, async (req, res) => {
+  try {
+    const user = req.user;
+    const token = req.token;
+    user.tokens = user.tokens.filter((t) => t.token !== token);
+
+    await user.save();
+
+    if (!user) throw new Error();
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
+router.post('/users/logoutAll', auth, async (req, res) => {
+  try {
+    const user = req.user;
+    user.tokens = [];
+
+    await user.save();
+    res.status(200).send();
+  } catch (error) {
+    res.status(500).send();
+  }
+});
+
 router.get('/users/me', auth, async (req, res) => {
   try {
     const user = req.user;
-    console.log(req.user);
+    console.log('req.user:', req.user);
     if (!user) throw new Error();
     res.status(200).send(user);
   } catch (error) {
