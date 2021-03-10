@@ -6,12 +6,6 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // app.use((req, res, next) => {
-//   if (req.method === 'GET') {
-//     res.status(400).send('GET requests are disabled');
-//   } else next();
-// });
-
-// app.use((req, res, next) => {
 //   res.status(503).send('Site under maintainance. Please try again soon!');
 // });
 
@@ -22,19 +16,16 @@ app.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });
 
-const jwt = require('jsonwebtoken');
+const Task = require('../db/models/task');
+const User = require('../db/models/user');
 
-const fun = async () => {
-  try {
-    const token = jwt.sign({_id: '123'}, 'hereissomethings', {
-      expiresIn: '1 second',
-    });
-    console.log('token', token);
-    const data = jwt.verify(token, 'hereissomethings');
-    console.log('data', data);
-  } catch (error) {
-    console.log('Login unsuccessful.');
-  }
+const main = async () => {
+  // const task = await Task.findById('604943924a45f55660065559');
+  // await task.populate('owner').execPopulate();
+  // console.log(task);
+  const user = await User.findById('604941d9de353a55eaa8ae5c');
+  await user.populate('tasks').execPopulate();
+  console.log(user.tasks);
 };
 
-// fun();
+// main();
