@@ -44,6 +44,9 @@ const userSchema = mongoose.Schema(
         token: {type: String, required: true},
       },
     ],
+    avatar: {
+      type: Buffer,
+    },
   },
   {timestamps: true}
 );
@@ -57,8 +60,10 @@ userSchema.virtual('tasks', {
 userSchema.methods.toJSON = function () {
   const user = this;
   const userObj = user.toObject();
+
   delete userObj.password;
   delete userObj.tokens;
+  delete userObj.avatar;
 
   return userObj;
 };
