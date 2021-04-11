@@ -1,7 +1,9 @@
+const {restart} = require('nodemon');
 const {
   calculateTip,
   fahrenheitToCelsius,
   celsiusToFahrenheit,
+  add,
 } = require('../src/math');
 
 test('Should return bill plus tip', () => {
@@ -26,4 +28,18 @@ test('Should convert F to C', () => {
   expect(c1).toBe(0);
   const c2 = fahrenheitToCelsius(68);
   expect(c2).toBe(20);
+});
+
+test('Async test demo', (done) => {
+  setTimeout(() => {
+    expect(2).toBe(2);
+    done();
+  }, 1000);
+});
+
+test('Should add two numbers', async () => {
+  const sum = await add(2, 3);
+  expect(sum).toBe(5);
+  const sum2 = await add(2, sum);
+  expect(sum2).toBe(7);
 });
